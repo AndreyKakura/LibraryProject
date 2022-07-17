@@ -45,7 +45,7 @@ public class SignInCommand implements Command {
                 request.setAttribute(USER_LOGIN, login);
                 request.setAttribute(USER_PASSWORD, password);
                 request.setAttribute(MESSAGE, SIGN_IN_ERROR_MESSAGE_KEY);
-                return new Router(PagePath.SIGN_IN, Router.RouterType.FORWARD); //TODO change to FORWARD
+                return new Router(PagePath.SIGN_IN, Router.RouterType.FORWARD);
             }
         } catch (ServiceException e) {
             logger.error("Error has occurred while signing in: " + e);

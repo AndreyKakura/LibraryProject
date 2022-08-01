@@ -1,16 +1,26 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: User
-  Date: 07.04.2022
-  Time: 18:28
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page isErrorPage="true" contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<fmt:setLocale value="${sessionScope.locale}" scope="session"/>
+<fmt:setBundle basename="pagecontent"/>
 <html>
 <head>
     <title>Error 404</title>
 </head>
 <body>
-404
+<main>
+    <form method="get" action="${pageContext.request.contextPath}/index.jsp">
+        <div id="error">
+            <div>
+                <div id="number">
+                    <div>404</div>
+                    <div>Not Found</div>
+                </div>
+                <div><fmt:message key="error.404.message"/></div>
+                <input type="submit" value="<fmt:message key="error.back"/>"/>
+            </div>
+        </div>
+    </form>
+</main>
 </body>
 </html>

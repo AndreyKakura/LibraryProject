@@ -10,6 +10,9 @@
 <jsp:include page="header.jsp"/>
 <body>
 <p><fmt:message key="home.title"/></p>
+<c:if test="${not empty message}">
+    <fmt:message key="${message}"/>
+</c:if>
 </body>
 <jsp:include page="footer.jsp"/>
 </html>

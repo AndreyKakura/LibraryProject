@@ -1,7 +1,7 @@
 package com.kakura.libraryproject.controller.command;
 
 import com.kakura.libraryproject.controller.command.impl.*;
-import com.kakura.libraryproject.controller.command.impl.go.GoToSignInCommand;
+import com.kakura.libraryproject.controller.command.impl.go.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,9 +10,16 @@ public enum CommandType {
     ADD_USER(new AddUserCommand()),
     LOGIN(new LoginCommand()),
     LOGOUT(new LogoutCommand()),
-
+    CHANGE_LOCALE(new ChangeLocaleCommand()),
     SIGN_IN(new SignInCommand()),
-    GO_TO_SIGN_UP(new GoToSignInCommand()),
+    SIGN_UP(new SignUpCommand()),
+    SIGN_OUT(new SignOutCommand()),
+    UPDATE_ACCOUNT_DATA(new UpdateAccountDataCommand()),
+    GO_TO_SIGN_IN(new GoToSignInCommand()),
+    GO_TO_SIGN_UP(new GoToSignUpCommand()),
+    GO_TO_HOME(new GoToHomeCommand()),
+    GO_TO_ACCOUNT(new GoToAccountCommand()),
+    GO_TO_UPDATE_ACCOUNT_DATA(new GoToUpdateAccountDataCommand()),
 
     DEFAULT(new DefaultCommand());
 

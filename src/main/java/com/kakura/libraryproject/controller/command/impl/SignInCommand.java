@@ -29,8 +29,6 @@ public class SignInCommand implements Command {
         HttpSession session = request.getSession();
         String login = request.getParameter(LOGIN);
         String password = request.getParameter(PASSWORD);
-        logger.debug(login);
-        logger.debug(password);
         try {
             Optional<User> user = userService.findUser(login, password);
             if (user.isPresent()) {
@@ -39,7 +37,9 @@ public class SignInCommand implements Command {
 //                String number = PhoneNumberFormatter.format(user.get().getPhoneNumber()); //TODO
 //                session.setAttribute(SessionAttribute.NUMBER, number);
                 session.setAttribute(SessionAttribute.USER, user.get());
+                System.out.println(user.get().getPhoneNumber());
                 session.setAttribute(SessionAttribute.ROLE, user.get().getUserRole().getRole());
+                request.removeAttribute(MESSAGE);
                 return new Router(PagePath.HOME, Router.RouterType.REDIRECT);
             } else {
                 request.setAttribute(USER_LOGIN, login);

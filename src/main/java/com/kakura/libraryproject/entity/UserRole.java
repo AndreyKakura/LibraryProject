@@ -3,6 +3,7 @@ package com.kakura.libraryproject.entity;
 public enum UserRole {
 
     ADMIN,
+    LIBRARIAN,
     USER,
     GUEST;
 

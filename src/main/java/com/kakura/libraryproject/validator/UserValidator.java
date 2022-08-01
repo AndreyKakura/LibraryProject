@@ -1,5 +1,7 @@
 package com.kakura.libraryproject.validator;
 
+import java.util.Map;
+
 public interface UserValidator {
     boolean isLoginValid(String login);
 
@@ -13,7 +15,7 @@ public interface UserValidator {
 
     boolean isNumberValid(String number);
 
-    //boolean checkUserData(Map<String, String> userData);//todo
+    boolean isUserDataValid(Map<String, String> userData);
 
     //boolean checkUserPersonalData(Map<String, String> userData);//todo
 }

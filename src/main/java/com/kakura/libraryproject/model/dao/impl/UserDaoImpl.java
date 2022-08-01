@@ -15,9 +15,16 @@ import static com.kakura.libraryproject.model.dao.ColumnName.USER_PASSWORD;
 
 public class UserDaoImpl extends UserDao {
     private static final ConnectionPool connectionPool = ConnectionPool.getInstance();
+    private static final String SQL_INSERT_USER =
+            "INSERT INTO users(login, surname, name, email, phone_number, role) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String SQL_UPDATE_USER =
+            "UPDATE users SET login = ?, surname = ?, name = ?, email = ?, phone_number = ? WHERE login = ?";
+    private static final String SQL_UPDATE_USER_PASSWORD = "UPDATE users SET password = ? WHERE login = ?";
     private static final String SELECT_LOGIN_PASSWORD = "SELECT password FROM users WHERE lastname = ?";
     private static final String SQL_SELECT_USERS_BY_LOGIN =
             "SELECT id_user, login, password, surname, name, email, phone_number, role, status FROM librarydb.users WHERE login = ?";
+    private static final String SQL_SELECT_USERS_BY_EMAIL =
+            "SELECT id_user, login, password, surname, name, email, phone_number, role, status FROM librarydb.users WHERE email = ?";
     private static final String SQL_SELECT_USER_PASSWORD = "SELECT password FROM librarydb.users WHERE login = ?";
 
     public UserDaoImpl() {
@@ -45,15 +52,24 @@ public class UserDaoImpl extends UserDao {
                 match = password.equals(passFromDb);
             }
 
-//            System.out.println("trying to release connection");
-//            ConnectionPool.getInstance().releaseConnection(connection);//todo
-//            System.out.println("connection released");
-
         } catch (SQLException e) {
             throw new DaoException(e);
         }
 
         return match;
+    }
+
+    @Override
+    public boolean updateUserPassword(String password, String login) throws DaoException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_PASSWORD)) {
+            preparedStatement.setString(FIRST_PARAM_INDEX, password);
+            preparedStatement.setString(SECOND_PARAM_INDEX, login);
+            preparedStatement.execute();
+            return true;
+        } catch (SQLException e) {
+            logger.error("Error has occurred while updating user password: " + e);
+            throw new DaoException("Error has occurred while updating user password: ", e);
+        }
     }
 
     @Override
@@ -68,6 +84,22 @@ public class UserDaoImpl extends UserDao {
         } catch (SQLException e) {
             logger.error("Error has occurred while finding user by login: " + e);
             throw new DaoException("Error has occurred while finding user by login: ", e);
+        }
+        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(ZERO_INDEX));
+    }
+
+    @Override
+    public Optional<User> findUserByEmail(String email) throws DaoException {
+        List<User> users;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_USERS_BY_EMAIL)) {
+            preparedStatement.setString(FIRST_PARAM_INDEX, email);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                UserMapper userMapper = UserMapper.getInstance();
+                users = userMapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("Error has occurred while finding user by email: " + e);
+            throw new DaoException("Error has occurred while finding user by email: ", e);
         }
         return users.isEmpty() ? Optional.empty() : Optional.of(users.get(ZERO_INDEX));
     }
@@ -90,12 +122,40 @@ public class UserDaoImpl extends UserDao {
 
     @Override
     public long add(User user) throws DaoException {
-        return 0;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_USER, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(FIRST_PARAM_INDEX, user.getLogin());
+            preparedStatement.setString(SECOND_PARAM_INDEX, user.getSurname());
+            preparedStatement.setString(THIRD_PARAM_INDEX, user.getName());
+            preparedStatement.setString(FOURTH_PARAM_INDEX, user.getEmail());
+            preparedStatement.setLong(FIFTH_PARAM_INDEX, user.getPhoneNumber().longValue());
+            preparedStatement.setString(SIXTH_PARAM_INDEX, user.getUserRole().getRole());
+            preparedStatement.execute();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            resultSet.next();
+            return resultSet.getLong(FIRST_PARAM_INDEX);
+        } catch (SQLException e) {
+            logger.error("Error has occurred while adding user: " + e);
+            throw new DaoException("Error has occurred while adding user", e);
+        }
     }
+
 
     @Override
     public boolean update(User user) throws DaoException {
-        return false;
+        //"UPDATE users SET login = ?, surname = ?, name = ?, email = ?, phone_number = ? WHERE id_user = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER)) {
+            preparedStatement.setString(FIRST_PARAM_INDEX, user.getLogin());
+            preparedStatement.setString(SECOND_PARAM_INDEX, user.getSurname());
+            preparedStatement.setString(THIRD_PARAM_INDEX, user.getName());
+            preparedStatement.setString(FOURTH_PARAM_INDEX, user.getEmail());
+            preparedStatement.setLong(FIFTH_PARAM_INDEX, user.getPhoneNumber().longValue());
+            preparedStatement.setString(SIXTH_PARAM_INDEX, Long.toString(user.getId()));
+            preparedStatement.execute();
+            return true;
+        } catch (SQLException e) {
+            logger.error("Error has occurred while updating user's data: " + e);
+            throw new DaoException("Error has occurred while updating user's data: ", e);
+        }
     }
 
     @Override

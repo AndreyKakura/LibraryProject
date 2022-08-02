@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class UserTest {
     private User user;
 
@@ -18,7 +16,7 @@ class UserTest {
         user.setSurname("Ivan");
         user.setName("Ivanov");
         user.setEmail("clown@gmail.com");
-        user.setPhoneNumber(new BigInteger("375441234567"));
+        user.setPhone(new BigInteger("375441234567"));
         user.setUserRole(UserRole.USER);
         user.setUserStatus(UserStatus.ACTIVE);
     }

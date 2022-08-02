@@ -37,7 +37,6 @@ public class SignInCommand implements Command {
 //                String number = PhoneNumberFormatter.format(user.get().getPhoneNumber()); //TODO
 //                session.setAttribute(SessionAttribute.NUMBER, number);
                 session.setAttribute(SessionAttribute.USER, user.get());
-                System.out.println(user.get().getPhoneNumber());
                 session.setAttribute(SessionAttribute.ROLE, user.get().getUserRole().getRole());
                 request.removeAttribute(MESSAGE);
                 return new Router(PagePath.HOME, Router.RouterType.REDIRECT);

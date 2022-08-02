@@ -23,12 +23,15 @@
         <dt class="col-sm-3"><fmt:message key="account.email"/></dt>
         <dd class="col-sm-9">${sessionScope.user.email}</dd>
 
-        <dt class="col-sm-3"><fmt:message key="account.number"/></dt>
-        <dd class="col-sm-9">+${sessionScope.user.phoneNumber}</dd>
+        <dt class="col-sm-3"><fmt:message key="account.phone"/></dt>
+        <dd class="col-sm-9">+${sessionScope.user.phone}</dd>
     </dl>
         <a class="btn btn-outline-success" href="${pageContext.request.contextPath}/controller?command=go_to_update_account_data">
             <fmt:message key="account.edit"/>
         </a>
+    <c:if test="${not empty message}">
+        <p class="alert-warning"><fmt:message key="${message}"/></p>
+    </c:if>
 </div>
 </body>
 <jsp:include page="../main/footer.jsp"/>

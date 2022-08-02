@@ -44,12 +44,12 @@
                    title="<fmt:message key="account.email.title"/>"
             />
             <br/>
-            <label for="phone_number"><fmt:message key="account.number"/></label><br/>
-            <input type="tel" name="phone_number" id="phone_number" required
-                   placeholder="<fmt:message key="account.number.placeholder"/>"
+            <label for="phone"><fmt:message key="account.phone"/></label><br/>
+            <input type="tel" name="phone" id="phone" required
+                   placeholder="<fmt:message key="account.phone.placeholder"/>"
                    pattern="\+375\d{9}"
-                   value="<c:out value="${requestScope.user.phone_number}"/>"
-                   title="<fmt:message key="account.number.title"/>"
+                   value="<c:out value="${requestScope.user.phone}"/>"
+                   title="<fmt:message key="account.phone.title"/>"
             />
             <br/>
             <label for="password"><fmt:message key="account.password"/></label><br/>

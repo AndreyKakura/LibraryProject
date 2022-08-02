@@ -7,9 +7,11 @@ import java.util.Optional;
 
 public abstract class UserDao extends BaseDao<Long, User> {
 
-    public abstract boolean authenticate(String login, String password) throws DaoException;
+    abstract public boolean authenticate(String login, String password) throws DaoException;
 
     abstract public boolean updateUserPassword(String password, String login) throws DaoException;
+
+    abstract public boolean updateUserStatusRole(String status, String role, Long id) throws DaoException;
 
     abstract public Optional<User> findUserByLogin(String login) throws DaoException;
 

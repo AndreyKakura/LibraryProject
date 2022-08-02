@@ -11,7 +11,7 @@ public class RequestAttribute {
 
     public static final String USERS = "users";
 
-    public static final String PHONE_NUMBER = "phone_number";
+    public static final String PHONE = "phone";
 
     public static final String PICTURE = "picture";
 

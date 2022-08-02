@@ -33,7 +33,7 @@ public class UserMapper implements Mapper<User> {
                     .setSurname(resultSet.getString(USER_SURNAME))
                     .setName(resultSet.getString(USER_NAME))
                     .setEmail(resultSet.getString(USER_EMAIL))
-                    .setPhoneNumber(BigInteger.valueOf(resultSet.getLong(USER_PHONE_NUMBER)))
+                    .setPhone(BigInteger.valueOf(resultSet.getLong(USER_PHONE_NUMBER)))
                     .setUserRole(UserRole.valueOf(resultSet.getString(USER_ROLE).toUpperCase()))
                     .setUserStatus(UserStatus.valueOf(resultSet.getString(USER_STATUS).toUpperCase()))
                     .build();

@@ -1,6 +1,5 @@
 package com.kakura.libraryproject.model.dao.impl;
 
-import com.kakura.libraryproject.model.dao.BaseDao;
 import com.kakura.libraryproject.model.dao.UserDao;
 import com.kakura.libraryproject.entity.User;
 import com.kakura.libraryproject.exception.DaoException;
@@ -18,14 +17,20 @@ public class UserDaoImpl extends UserDao {
     private static final String SQL_INSERT_USER =
             "INSERT INTO users(login, surname, name, email, phone_number, role) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE_USER =
-            "UPDATE users SET login = ?, surname = ?, name = ?, email = ?, phone_number = ? WHERE login = ?";
+            "UPDATE users SET login = ?, surname = ?, name = ?, email = ?, phone_number = ? WHERE id_user = ?";
     private static final String SQL_UPDATE_USER_PASSWORD = "UPDATE users SET password = ? WHERE login = ?";
+    private static final String SQL_UPDATE_USER_STATUS_ROLE = "UPDATE users SET status = ?, role = ? WHERE id_user = ?";
     private static final String SELECT_LOGIN_PASSWORD = "SELECT password FROM users WHERE lastname = ?";
     private static final String SQL_SELECT_USERS_BY_LOGIN =
             "SELECT id_user, login, password, surname, name, email, phone_number, role, status FROM librarydb.users WHERE login = ?";
+    private static final String SQL_SELECT_USERS_BY_ID =
+            "SELECT id_user, login, password, surname, name, email, phone_number, role, status FROM librarydb.users WHERE id_user = ?";
     private static final String SQL_SELECT_USERS_BY_EMAIL =
             "SELECT id_user, login, password, surname, name, email, phone_number, role, status FROM librarydb.users WHERE email = ?";
     private static final String SQL_SELECT_USER_PASSWORD = "SELECT password FROM librarydb.users WHERE login = ?";
+    private static final String SQL_SELECT_ALL_USERS =
+            "SELECT id_user, login, password, surname, name, email, phone_number, role, status FROM users";
+    private static final String SQL_DELETE_USER = "DELETE FROM users WHERE id_user = ?";
 
     public UserDaoImpl() {
     }
@@ -69,6 +74,20 @@ public class UserDaoImpl extends UserDao {
         } catch (SQLException e) {
             logger.error("Error has occurred while updating user password: " + e);
             throw new DaoException("Error has occurred while updating user password: ", e);
+        }
+    }
+
+    @Override
+    public boolean updateUserStatusRole(String status, String role, Long id) throws DaoException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER_STATUS_ROLE)) {
+            preparedStatement.setString(FIRST_PARAM_INDEX, status);
+            preparedStatement.setString(SECOND_PARAM_INDEX, role);
+            preparedStatement.setString(THIRD_PARAM_INDEX, Long.toString(id));
+            preparedStatement.execute();
+            return true;
+        } catch (SQLException e) {
+            logger.error("Error has occurred while updating user status and role: " + e);
+            throw new DaoException("Error has occurred while updating user status and role: ", e);
         }
     }
 
@@ -127,7 +146,7 @@ public class UserDaoImpl extends UserDao {
             preparedStatement.setString(SECOND_PARAM_INDEX, user.getSurname());
             preparedStatement.setString(THIRD_PARAM_INDEX, user.getName());
             preparedStatement.setString(FOURTH_PARAM_INDEX, user.getEmail());
-            preparedStatement.setLong(FIFTH_PARAM_INDEX, user.getPhoneNumber().longValue());
+            preparedStatement.setLong(FIFTH_PARAM_INDEX, user.getPhone().longValue());
             preparedStatement.setString(SIXTH_PARAM_INDEX, user.getUserRole().getRole());
             preparedStatement.execute();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -142,13 +161,12 @@ public class UserDaoImpl extends UserDao {
 
     @Override
     public boolean update(User user) throws DaoException {
-        //"UPDATE users SET login = ?, surname = ?, name = ?, email = ?, phone_number = ? WHERE id_user = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_USER)) {
             preparedStatement.setString(FIRST_PARAM_INDEX, user.getLogin());
             preparedStatement.setString(SECOND_PARAM_INDEX, user.getSurname());
             preparedStatement.setString(THIRD_PARAM_INDEX, user.getName());
             preparedStatement.setString(FOURTH_PARAM_INDEX, user.getEmail());
-            preparedStatement.setLong(FIFTH_PARAM_INDEX, user.getPhoneNumber().longValue());
+            preparedStatement.setLong(FIFTH_PARAM_INDEX, user.getPhone().longValue());
             preparedStatement.setString(SIXTH_PARAM_INDEX, Long.toString(user.getId()));
             preparedStatement.execute();
             return true;
@@ -159,17 +177,44 @@ public class UserDaoImpl extends UserDao {
     }
 
     @Override
-    public boolean delete(Long aLong) throws DaoException {
-        return false;
+    public boolean delete(Long id) throws DaoException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_USER)) {
+            preparedStatement.setLong(FIRST_PARAM_INDEX, id);
+            preparedStatement.execute();
+            return true;
+        } catch (SQLException e) {
+            logger.error("Error has occurred while deleting user: " + e);
+            throw new DaoException("Error has occurred while deleting user: ", e);
+        }
     }
 
     @Override
     public List<User> findAll() throws DaoException {
-        return null;
+        List<User> users;
+        try (Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_USERS)) {
+            UserMapper userMapper = UserMapper.getInstance();
+            users = userMapper.retrieve(resultSet);
+        } catch (SQLException e) {
+            logger.error("Error has occurred while finding users: " + e);
+            throw new DaoException("Error has occurred while finding users: ", e);
+        }
+        return users;
     }
 
     @Override
-    public Optional<User> findById(Long aLong) throws DaoException {
-        return Optional.empty();
+    public Optional<User> findById(Long id) throws DaoException {
+        List<User> users;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_SELECT_USERS_BY_ID)) {
+            preparedStatement.setString(FIRST_PARAM_INDEX, Long.toString(id));
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                UserMapper userMapper = UserMapper.getInstance();
+                users = userMapper.retrieve(resultSet);
+            }
+        } catch (SQLException e) {
+            logger.error("Error has occurred while finding user by id: " + e);
+            throw new DaoException("Error has occurred while finding user by id: ", e);
+        }
+        return users.isEmpty() ? Optional.empty() : Optional.of(users.get(ZERO_INDEX));
     }
 }

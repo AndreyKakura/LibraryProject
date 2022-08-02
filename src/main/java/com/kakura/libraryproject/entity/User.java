@@ -8,7 +8,7 @@ public class User extends AbstractEntity { //todo implements Cloneable
     private String surname;
     private String name;
     private String email;
-    private BigInteger phoneNumber;
+    private BigInteger phone;
     private UserRole userRole;
     private UserStatus userStatus;
 
@@ -52,12 +52,12 @@ public class User extends AbstractEntity { //todo implements Cloneable
         this.email = email;
     }
 
-    public BigInteger getPhoneNumber() {
-        return phoneNumber;
+    public BigInteger getPhone() {
+        return phone;
     }
 
-    public void setPhoneNumber(BigInteger phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhone(BigInteger phone) {
+        this.phone = phone;
     }
 
     public UserRole getUserRole() {
@@ -100,7 +100,7 @@ public class User extends AbstractEntity { //todo implements Cloneable
         if (email != null ? !email.equals(user.email) : user.email != null) {
             return false;
         }
-        if (phoneNumber != null ? !phoneNumber.equals(user.phoneNumber) : user.phoneNumber != null) {
+        if (phone != null ? !phone.equals(user.phone) : user.phone != null) {
             return false;
         }
         if (userRole != null ? !userRole.equals(user.userRole) : user.userRole != null) {
@@ -116,7 +116,7 @@ public class User extends AbstractEntity { //todo implements Cloneable
         result = result * 31 + (surname != null ? surname.hashCode() : 0);
         result = result * 31 + (name != null ? name.hashCode() : 0);
         result = result * 31 + (email != null ? email.hashCode() : 0);
-        result = result * 31 + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        result = result * 31 + (phone != null ? phone.hashCode() : 0);
         result = result * 31 + (userRole != null ? userRole.hashCode() : 0);
         result = result * 31 + (userStatus != null ? userStatus.hashCode() : 0);
         return result;
@@ -130,7 +130,7 @@ public class User extends AbstractEntity { //todo implements Cloneable
         sb.append(", surname = ").append(surname);
         sb.append(", name = ").append(name);
         sb.append(", email = ").append(email);
-        sb.append(", phoneNumber = ").append(phoneNumber);
+        sb.append(", phone = ").append(phone);
         sb.append(", userRole = ").append(userRole);
         sb.append(", userStatus = ").append(userStatus);
         sb.append('}');
@@ -169,8 +169,8 @@ public class User extends AbstractEntity { //todo implements Cloneable
             return this;
         }
 
-        public UserBuilder setPhoneNumber(BigInteger phoneNumber) {
-            user.phoneNumber = phoneNumber;
+        public UserBuilder setPhone(BigInteger phone) {
+            user.phone = phone;
             return this;
         }
 

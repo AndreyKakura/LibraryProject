@@ -59,7 +59,7 @@ public class UserValidatorImpl implements UserValidator {
     }
 
     @Override
-    public boolean isUserDataValid(Map<String, String> userData) { //todo
+    public boolean isUserDataValid(Map<String, String> userData) {
         if(!isLoginValid(userData.get(LOGIN))) {
             userData.put(LOGIN, userData.get(LOGIN) + INCORRECT_VALUE_PARAMETER);
             return false;
@@ -84,8 +84,8 @@ public class UserValidatorImpl implements UserValidator {
             userData.put(EMAIL, userData.get(EMAIL) + INCORRECT_VALUE_PARAMETER);
             return false;
         }
-        if (!isNumberValid(userData.get(PHONE_NUMBER))) {
-            userData.put(PHONE_NUMBER, userData.get(PHONE_NUMBER) + INCORRECT_VALUE_PARAMETER);
+        if (!isNumberValid(userData.get(PHONE))) {
+            userData.put(PHONE, userData.get(PHONE) + INCORRECT_VALUE_PARAMETER);
             return false;
         }
         return true;

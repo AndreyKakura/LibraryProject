@@ -3,6 +3,7 @@ package com.kakura.libraryproject.model.service;
 import com.kakura.libraryproject.entity.User;
 import com.kakura.libraryproject.exception.ServiceException;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -14,6 +15,10 @@ public interface UserService {
 
     Optional<User> findUser(String login) throws ServiceException;
 
+    Optional<User> findUser(Long id) throws ServiceException;
+
+    List<User> findUsers() throws ServiceException;
+
     boolean isLoginOccupied(String login) throws ServiceException;
 
     boolean isEmailOccupied(String email) throws ServiceException;
@@ -23,6 +28,10 @@ public interface UserService {
     boolean registerUser(Map<String, String> userData) throws ServiceException;
 
     boolean updateUserData(Map<String, String> userData) throws ServiceException;
+
+    boolean updatePassword(Map<String, String> userData) throws ServiceException;
+
+    boolean updateUserStatusAndRole(Map<String, String> userData) throws ServiceException;
 
 
 }

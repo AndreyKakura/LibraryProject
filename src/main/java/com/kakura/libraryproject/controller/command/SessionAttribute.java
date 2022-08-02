@@ -5,7 +5,9 @@ public class SessionAttribute {
 
     public static final String USER = "user";
 
-    public static final String NUMBER = "number";
+    public static final String USERS = "users";
+
+    public static final String PHONE = "phone";
 
     public static final String CURRENT_PAGE = "current_page";
 
@@ -14,8 +16,6 @@ public class SessionAttribute {
     public static final String LANGUAGE = "language";
 
     public static final String MESSAGE = "message";
-
-    public static final String USERS = "users";
 
     public static final String PAGE = "page";
 

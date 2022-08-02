@@ -24,6 +24,16 @@
                             <fmt:message key="header.home"/> </a>
                     </li>
                     <c:choose>
+                        <c:when test="${sessionScope.role eq 'admin'}">
+                            <li class="nav-item px-1">
+                                <a class="nav-link btn btn-outline-success"
+                                   href="${pageContext.request.contextPath}/controller?command=go_to_accounts_management">
+                                    <fmt:message key="header.users"/>
+                                </a>
+                            <li/>
+                        </c:when>
+                    </c:choose>
+                    <c:choose>
                         <c:when test="${sessionScope.role eq 'guest'}">
                             <li class="nav-item px-1">
                                 <a class="nav-link btn btn-outline-success"

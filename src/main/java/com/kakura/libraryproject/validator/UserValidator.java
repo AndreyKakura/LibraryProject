@@ -17,5 +17,4 @@ public interface UserValidator {
 
     boolean isUserDataValid(Map<String, String> userData);
 
-    //boolean checkUserPersonalData(Map<String, String> userData);//todo
 }

@@ -40,12 +40,12 @@ public class SignUpCommand implements Command {
         userData.put(SURNAME, request.getParameter(SURNAME));
         userData.put(NAME, request.getParameter(NAME));
         userData.put(EMAIL, request.getParameter(EMAIL));
-        userData.put(PHONE_NUMBER, request.getParameter(PHONE_NUMBER));
+        userData.put(PHONE, request.getParameter(PHONE));
 
         try {
             if (userService.isLoginOccupied(userData.get(LOGIN))) {
                 request.setAttribute(USER, userData);
-                session.setAttribute(SessionAttribute.MESSAGE, LOGIN_AVAILABILITY_ERROR_MESSAGE_KEY);
+                request.setAttribute(MESSAGE, LOGIN_AVAILABILITY_ERROR_MESSAGE_KEY); //todo was session attribute
                 return new Router(PagePath.SIGN_UP, Router.RouterType.FORWARD);
             }
             if (userService.isEmailOccupied(userData.get(EMAIL))) {
@@ -59,7 +59,7 @@ public class SignUpCommand implements Command {
                 return new Router(PagePath.SIGN_UP, Router.RouterType.FORWARD);
             }
             if (userService.registerUser(userData)) {
-                session.removeAttribute(SessionAttribute.MESSAGE);
+                request.removeAttribute(MESSAGE); //todo was session attribute
                 return new Router(PagePath.HOME, Router.RouterType.REDIRECT);
             } else {
                 request.setAttribute(USER, userData);

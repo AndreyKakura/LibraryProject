@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpSession;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.security.cert.PolicyNode;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -22,6 +21,7 @@ import java.util.Optional;
 import static com.kakura.libraryproject.controller.command.RequestAttribute.MESSAGE;
 import static com.kakura.libraryproject.controller.command.RequestAttribute.USER;
 import static com.kakura.libraryproject.controller.command.RequestParameter.*;
+
 
 public class UpdateAccountDataCommand implements Command {
     private static final Logger logger = LogManager.getLogger();
@@ -38,6 +38,7 @@ public class UpdateAccountDataCommand implements Command {
         HttpSession session = request.getSession();
         User currentUser = (User) session.getAttribute(SessionAttribute.USER);
         String login = currentUser.getLogin();
+        String id = Long.toString(currentUser.getId());
         Map<String, String> userData = new HashMap<>();
         userData.put(LOGIN, request.getParameter(LOGIN));
         userData.put(PASSWORD, request.getParameter(PASSWORD));
@@ -46,14 +47,13 @@ public class UpdateAccountDataCommand implements Command {
         userData.put(SURNAME, request.getParameter(SURNAME));
         userData.put(NAME, request.getParameter(NAME));
         userData.put(EMAIL, request.getParameter(EMAIL));
-        System.out.println(request.getParameter(PHONE_NUMBER) + " REQUEST");
-        userData.put(PHONE_NUMBER, request.getParameter(PHONE_NUMBER));
-        System.out.println(userData.get(PHONE_NUMBER) + " USER DATA");
-        if (!login.equals(userData.get(LOGIN)) && userData.get(PASSWORD).isEmpty()) {
-            request.setAttribute(USER, userData);
-            request.setAttribute(MESSAGE, PASSWORD_REQUIREMENT_ERROR_MESSAGE_KEY);
-            return new Router(PagePath.UPDATE_ACCOUNT_DATA, Router.RouterType.FORWARD);
-        }
+        userData.put(PHONE, request.getParameter(PHONE));
+        userData.put(ID, id);
+//        if (!login.equals(userData.get(LOGIN)) && userData.get(PASSWORD).isEmpty()) {
+//            request.setAttribute(USER, userData);
+//            request.setAttribute(MESSAGE, PASSWORD_REQUIREMENT_ERROR_MESSAGE_KEY);
+//            return new Router(PagePath.UPDATE_ACCOUNT_DATA, Router.RouterType.FORWARD);
+//        }
         try {
             if (!login.equals(userData.get(LOGIN)) && userService.isLoginOccupied(userData.get(LOGIN))) {
                 request.setAttribute(USER, userData);
@@ -73,7 +73,7 @@ public class UpdateAccountDataCommand implements Command {
                     user = userService.findUser(userData.get(LOGIN));
                     if (user.isPresent()) {
                         session.setAttribute(SessionAttribute.USER, user.get());
-                        //session.setAttribute(SessionAttribute.NUMBER, userData.get(PHONE_NUMBER));
+                        //session.setAttribute(SessionAttribute.PHONE, userData.get(PHONE));
                         session.removeAttribute(SessionAttribute.MESSAGE);
                         return new Router(PagePath.ACCOUNT, Router.RouterType.REDIRECT);
                     }
@@ -88,8 +88,9 @@ public class UpdateAccountDataCommand implements Command {
                 return new Router(PagePath.UPDATE_ACCOUNT_DATA, Router.RouterType.FORWARD);
             }
 
-        } catch (ServiceException exception) {
-            logger.error("Error has occurred while updating user account: " + exception);
+        } catch (ServiceException e) {
+            logger.error("Error has occurred while updating user account: " + e);
+            throw new CommandException("Error has occurred while updating user account", e);
         }
         return new Router(PagePath.ERROR_404, Router.RouterType.REDIRECT);
     }
